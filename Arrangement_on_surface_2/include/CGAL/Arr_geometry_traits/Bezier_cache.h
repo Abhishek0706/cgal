@@ -513,32 +513,18 @@ _Bezier_cache<NtTraits>::get_intersections
       }
     }
 
-    if (! found)
-    {
-      // We are left with a single point - pair it with *pit1.
-      pit2 = dist_vec[0].second;
-
-      // Obtain the parameter value, and try to simplify the representation
-      // of the intersection point.
-      t = pit2->parameter();
-
-      if (x2_simpler)
-        pit1->x = pit2->x;
-      if (y2_simpler)
-        pit1->y = pit2->y;
-
-      // Remove this point from pts2, as we found a match for it.
-      pts2_ptr->erase (pit2);
+    if (found){
+      // Check that  s- and t-values both lie in the legal range of [0,1].
+      CGAL_assertion(CGAL::sign (s) != NEGATIVE && CGAL::compare (s, one) != LARGER &&
+                    CGAL::sign (t) != NEGATIVE && CGAL::compare (t, one) != LARGER);
+      
+      if (!swapt)
+        info.first.push_back (Intersection_point_2 (s, t,pit1->x, pit1->y));
+      else
+        info.first.push_back (Intersection_point_2 (t, s,pit1->x, pit1->y));
     }
-
-    // Check that  s- and t-values both lie in the legal range of [0,1].
-    CGAL_assertion(CGAL::sign (s) != NEGATIVE && CGAL::compare (s, one) != LARGER &&
-                   CGAL::sign (t) != NEGATIVE && CGAL::compare (t, one) != LARGER);
     
-    if (!swapt)
-      info.first.push_back (Intersection_point_2 (s, t,pit1->x, pit1->y));
-    else
-      info.first.push_back (Intersection_point_2 (t, s,pit1->x, pit1->y));
+    
   }
 
   info.second = false;
