@@ -950,16 +950,15 @@ _Bezier_x_monotone_2<RatKer, AlgKer, NtTrt, BndTrt>::point_position
 
 
   if ( p.is_rational() ){
-    const Rational& px = ((Rat_point_2) p).x();
+    const Rat_point_2& rp = ((Rat_point_2) p);
 
-    Integer denom_px=nt_traits.denominator(px);
-    Integer numer_px=nt_traits.numerator(px);
+    Integer denom_px=nt_traits.denominator(rp.x());
+    Integer numer_px=nt_traits.numerator(rp.x());
     Polynomial poly_px = CGAL::sign(numer_px) == ZERO ? Polynomial() : nt_traits.construct_polynomial(&numer_px,0);
     Polynomial poly_x = nt_traits.scale(_curve.x_polynomial(),denom_px) - poly_px;
 
     std::vector <Algebraic> roots;
-    std::pair<double,double> prange = parameter_range();
-    nt_traits.compute_polynomial_roots (poly_x,prange.first,prange.second,std::back_inserter(roots));
+    nt_traits.compute_polynomial_roots (poly_x,0,1,std::back_inserter(roots));
 
     CGAL_assertion(roots.size()==1); //p is in the range and the curve is x-monotone
 
